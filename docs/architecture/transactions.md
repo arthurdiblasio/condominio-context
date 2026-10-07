@@ -20,6 +20,23 @@ O objetivo não é manter toda a operação de negócio em uma transação longa
 
 Tabela define requisitos conceituais, não afirma que cada item é atualmente permitido. Decisões de negócio abertas continuam bloqueando transições correspondentes.
 
+## Matriz de fronteira transacional por operação
+
+“Fato principal” é uma mudança de estado ou ocorrência de domínio. Audit de sucesso obrigatório e o fato correspondente são indivisíveis: se um deles falha, nenhum pode ser confirmado. Audit de tentativa negada, quando exigido, registra o resultado negado e nunca descreve sucesso. Domain Event não implica persistência/publicação universal. Outbox só participa da unidade atômica quando publicação durável for requisito explícito; provider/canal nunca é chamado dentro da transação.
+
+| Operação | Fato principal e validação | AuditLog obrigatório | Domain Event | Outbox/efeito assíncrono |
+|---|---|---|---|---|
+| Reservation approval/cancel | Decisão/transição aceita e disponibilidade/conflict revalidada no instante da aprovação. Cancelamento não apaga a confirmação histórica. | Fato + audit de sucesso atomicamente; tentativa negada separada conforme policy. | Confirmed/Cancelled somente para fato aceito. | Notification opcional sob OD-08; intenção/outbox atomicamente se entrega durável exigida; provider async. |
+| Package confirm/release | `PackageEvent(CONFIRMED)` ou `PICKED_UP`, ator, tenant; situação derivada apenas se adotada. Confirmação não substitui retirada. | Evento + audit atomicamente; correção mantém referência ao original. | Evento específico do fato aceito. | Notification opcional; outbox atomicamente se entrega durável exigida; provider async. |
+| Access event | `ENTRY`, `EXIT` ou `DENIED` realmente observado com instante, tenant, origem e actor conhecidos. | Observação + audit atomicamente quando obrigatório; tentativa negada não é sucesso. | AccessEventRecorded/Corrected após validação. | Somente reação externa durável aprovada; nunca cria Authorization retroativa. |
+| RoleAssignment grant/revoke/suspend/reactivate | Estado/vigência alterados sob authority corrente; preservar autoria e histórico. | Mudança + audit obrigatórios atomicamente. | Evento correspondente à transição aceita. | Notification condicional; outbox atomicamente somente se entrega durável requerida. |
+| Vote | Vote aceito em pauta aberta com eligibility contextual e unicidade conforme OD-01. | Vote + audit obrigatório atomicamente, respeitando sigilo/visibilidade aprovados. | VoteRecorded/Invalidated para fato/correção aceita. | Apuração/publicação não é automática; downstream somente após regra aprovada. |
+| Assembly close | Transição de Assembly/AgendaItem e fatos de fechamento permitidos; não inclui apuração/publicação automaticamente. | Fechamento + audit atomicamente. | AssemblyClosed/AgendaItemClosed quando aceitos. | Notificação condicional; apuração/publicação são processos separados sob OD-01. |
+| Feature enable/disable | Estado de CondominiumFeature/Module alterado no tenant alvo; operações em andamento não se resolvem por inferência. | Mudança + audit atomicamente. | Evento de habilitação/desabilitação aceito. | Notificação condicional; efeitos sobre operações em curso dependem de OD-11. |
+| Notification creation | Intenção lógica, destinatário/finalidade/canais permitidos; criação não prova tentativa/entrega. | Intenção + audit atomicamente se audit for obrigatório para essa classe. | NotificationCreated se aceita. | Delivery é tentativa distinta; outbox atômica se tentativa durável for requisito; provider async. |
+
+Fato de sucesso sem seu AuditLog obrigatório, ou AuditLog que afirme sucesso sem o fato, é estado arquiteturalmente inválido. Se a escrita do audit falhar, o fato dependente não pode ser confirmado. Uma falha/recusa não pode ser convertida em evento de sucesso por handler, retry ou resposta externa.
+
 ## Consistência sob concorrência
 
 - Reservation: revalidar disponibilidade no instante de decisão e evitar confirmação dupla se política proíbe conflito; prioridade é OD-04.
@@ -27,8 +44,12 @@ Tabela define requisitos conceituais, não afirma que cada item é atualmente pe
 - Package: confirmar ocorrência, ator e fato distintos; não colapsar retirada concorrente como uma só; OD-06/18.
 - RoleAssignment: não decidir a partir de autoridade/estado obsoleto; vigência e precedência seguem OD-02/14/18.
 - AccessAuthorization: validar vigência contra o instante relevante; não restaurar autorização revogada/expirada por efeito de corrida; OD-05.
+- AccessEvent/PackageEvent: preservar observações distintas; apenas replay comprovado do mesmo input/operation é repetição, nunca proximidade temporal.
+- Feature disable: ordenar/revalidar a mudança frente a commands dependentes; não declarar operação concorrente válida com base em configuração já inválida.
 
 A implementação deverá definir estratégia de consistência/integridade apropriada depois de decisões e requisitos de escala; este documento não prescreve lock, isolamento SQL, retry técnico ou mecanismo PostgreSQL.
+
+Toda operação distingue validação/recusa, sucesso commitado e resultado de commit incerto (por exemplo, conexão perdida após o envio). Resultado incerto não autoriza mutação repetida às cegas: resolver pela identidade da operação/histórico e retornar resultado anterior ou conflito. Sem identidade confiável, exigir revisão e não reportar sucesso especulativo.
 
 ## Unit of Work
 

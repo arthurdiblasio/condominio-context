@@ -6,6 +6,8 @@
 - **Metrics:** contadores, duração, falhas e atraso de processamento; agregar por dimensão sem expor pessoas ou misturar tenants inadvertidamente.
 - **Tracing:** acompanhar uma operação entre camadas/serviços; identificador de trace/correlation não é identidade, tenant proof nem autorização.
 - **Correlation ID:** correlaciona entrada, use case, persistência e efeitos; deve ser propagado a handlers quando aplicável e não conter dados pessoais.
+- **Tenant context:** propagação somente após validação; logs/labels nunca autorizam, resolvem recurso ou provam pertencimento.
+- **Actor context:** preservar distinção entre human/system/service actor, subject, Person afetada e origem do job. Não registrar serviço como autoria humana.
 
 Não foi escolhido fornecedor nem padrão de instrumentação (por exemplo, OpenTelemetry ou Datadog).
 
@@ -16,10 +18,13 @@ Não foi escolhido fornecedor nem padrão de instrumentação (por exemplo, Open
 ## Segurança e dados sensíveis
 
 - Isolar contexto de tenant nas consultas, logs, métricas, traces, cache e efeitos externos.
+- Toda query, export, report, projection, search e cache tenant-scoped aplica tenant antes de retornar dados; correlation/tenant label não é isolamento.
+- Jobs, eventos e outbox carregam contexto mínimo e verificável; consumers validam novamente. Métricas agregadas não devem expor dados de tenant por labels de alta cardinalidade.
 - Minimizar valores pessoais; usar identificadores/referências e redigir dados sensíveis onde detalhes não forem necessários.
 - Dados de acesso, votação, vínculos, notificações, evidências e documentos exigem controle e retenção segundo privacy policies pendentes.
 - Erros para clientes podem ser minimizados para evitar enumeração cross-tenant; diagnóstico detalhado somente a atores autorizados.
 - Falha de observabilidade não deve criar sucesso falso nem dispensar audit obrigatório.
+- AuditLog obrigatório e fato de sucesso são atômicos; logs técnicos, traces e callbacks não substituem audit.
 
 ## Cache
 

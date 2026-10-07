@@ -44,5 +44,9 @@ Se não houver requisito de entrega durável no MVP, manter a decisão adiada e 
 - Resultado de envio precisa de evidência e fica em NotificationDelivery.
 - Erro do provider não reverte Package, Reservation, RoleAssignment ou outro fato persistido.
 - Audit obrigatório continua distinto da mensagem outbox.
+- Se publicação durável for requisito, fato principal, AuditLog obrigatório e intenção de publicação são persistidos na mesma unidade atômica; sem commit conjunto não há sucesso reportável.
+- Envelope carrega classificação Platform/Tenant, tenant validado de origem, resource/fato, actor/origin, purpose, operation identity e correlation. Esses dados são verificáveis, não autorização autossuficiente.
+- Consumer revalida contexto e executa o efeito por Application. Nova decisão de negócio exige authority corrente; consequência previamente autorizada limita-se à intenção persistida ainda válida.
+- Retry não muda tenant nem operation identity. Outbox não oferece garantia “exactly once” no efeito externo.
 
 Nenhum schema, tabela, fila, broker ou formato de mensagem é definido.

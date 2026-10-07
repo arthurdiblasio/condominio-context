@@ -15,7 +15,7 @@ A arquitetura conceitual do backend que deverá preservar este contrato está em
 - Distinguir **Resource**, **Query**, **Command** e **Workflow Operation**. A existência de um recurso não implica CRUD completo.
 - Alterações com consequência de negócio usam comandos semânticos; não permitir alteração genérica de estado que contorne guardas, permissions ou audit.
 - Tenant e scope do recurso são explícitos e coerentes para toda operação condominial. A forma técnica de indicar contexto permanece aberta.
-- Operação autenticada requer `UserAccount` ativa, associação a `Person`, `RoleAssignment`, `Permission`, `Scope`, tenant e pré-condições do workflow; a matriz é proposta.
+- Operação humana autenticada requer `UserAccount` ativa, associação a `Person` conforme OD-03, `RoleAssignment`, `Permission`, `Scope`, tenant e pré-condições do workflow; a matriz é proposta. Operação automática/de serviço deve ter actor identificado e authority limitada, nunca bypass implícito. Toda operação tenant-scoped usa contexto validado.
 - Eventos de domínio/operacionais são fatos produzidos pelo comando, não endpoints genéricos para inserir/editar eventos.
 - Resposta de API não é Domain Event. A comunicação/entrega de Notification é efeito independente e não reverte o resultado de negócio.
 - Não apagar histórico por atualização, cancelamento, revogação, desativação, correção ou desabilitação de módulo.
@@ -31,6 +31,8 @@ A arquitetura conceitual do backend que deverá preservar este contrato está em
 - [Idempotência, concorrência, auditoria, eventos e notificações](./docs/api/idempotency.md)
 - [Matriz de rastreabilidade WF → operação](./docs/api/traceability.md)
 - [Versionamento conceitual](./docs/api/versioning.md)
+
+O [modelo temporal conceitual](./docs/architecture/temporal-model.md) define distinções de instante, calendário local, timezone e validade sem fixar formato técnico ou regra legal.
 
 ## Limites do primeiro release
 

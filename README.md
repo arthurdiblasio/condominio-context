@@ -12,7 +12,7 @@ Objetivo principal:
 
 ## Status
 
-`ARCHITECTURE_REQUIRES_REVISION`
+`ARCHITECTURE_REMEDIATION_REQUIRES_REVIEW`
 
 ## Estrutura
 
@@ -26,6 +26,8 @@ condominio-context/
 ├── WORKFLOWS.md
 ├── API-CONTRACT.md
 ├── ARCHITECTURE-CRITICAL-REVIEW.md
+├── ARCHITECTURE-REMEDIATION.md
+├── DOMAIN-DECISIONS-CLOSURE.md
 ├── OPEN-DECISIONS.md
 ├── docs/
 │   ├── architecture/
@@ -42,6 +44,7 @@ condominio-context/
 │   │   ├── outbox.md
 │   │   ├── infrastructure.md
 │   │   ├── observability.md
+│   │   ├── temporal-model.md
 │   │   ├── project-structure.md
 │   │   └── decisions.md
 │   ├── domain/
@@ -204,6 +207,9 @@ flowchart TD
 - [API Contract conceitual](./API-CONTRACT.md)
 - [Arquitetura conceitual do backend](./docs/architecture/overview.md)
 - [Revisão crítica da arquitetura](./ARCHITECTURE-CRITICAL-REVIEW.md)
+- [Remediação arquitetural](./ARCHITECTURE-REMEDIATION.md)
+- [Fechamento e classificação das decisões de domínio](./DOMAIN-DECISIONS-CLOSURE.md)
+- [Modelo temporal arquitetural](./docs/architecture/temporal-model.md)
 - [OPEN-DECISIONS.md](./OPEN-DECISIONS.md)
 - [Regras de negócio detalhadas](./docs/business-rules/)
 - [docs/README.md](./docs/README.md)

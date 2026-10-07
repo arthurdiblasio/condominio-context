@@ -28,15 +28,23 @@ Este registro cobre propostas arquiteturais/técnicas desta etapa. Decisões de 
 
 ## Revisão crítica
 
-A [revisão crítica da arquitetura](../../ARCHITECTURE-CRITICAL-REVIEW.md) classifica a proposta como `NEEDS REVISION` e o status como `ARCHITECTURE_REQUIRES_REVISION`. As propostas ARCH-01..06 continuam propostas, não ADRs aprovados; ARCH-03/04/06 precisam de maior precisão sobre ownership e garantias. TECH-01 é stack informada, não alternativa comparada.
+A [revisão crítica da arquitetura](../../ARCHITECTURE-CRITICAL-REVIEW.md) permanece registro histórico com assessment `NEEDS REVISION` e status `ARCHITECTURE_REQUIRES_REVISION`; o resultado desta etapa está em [ARCHITECTURE-REMEDIATION.md](../../ARCHITECTURE-REMEDIATION.md). As propostas ARCH-01..06 continuam propostas, não ADRs aprovados. TECH-01 é stack informada, não alternativa comparada.
 
 Novas propostas para avaliação, não decisões aprovadas:
 
 | ID candidato | Tema | Questão a fechar |
 |---|---|---|
-| ARCH-07 | Tenant-scoped persistence contract | Como tornar obrigatório o tenant em todo acesso operacional, enumerar operações globais e testar isolamento; defesa adicional da persistência ainda será avaliada. |
-| ARCH-08 | Command consistency, audit e replay | Para cada command exposto, declarar invariantes, atomicidade com audit/publication intent, comportamento pós-falha e semântica de repetição. |
-| ARCH-09 | Modelo temporal | Distinguir instantes, datas civis, timezone e períodos de validade/agendamento antes de implementar workflows temporais. |
+| ARCH-07 | Tenant-scoped persistence contract | Requisitos obrigatórios estão descritos; selecionar forma concreta de ports/defesa, classificar todos os recursos e validar com testes. |
+| ARCH-08 | Command consistency, audit e replay | Matriz e semântica conceitual estão descritas; selecionar mecanismo de atomicidade, identidade/recuperação e fechar cobertura de commands por release. |
+| ARCH-09 | Modelo temporal | Tipos e contexto de timezone estão descritos; fechar fonte/configuração da zona, instante de referência, bordas por workflow e resolução de ambiguidade. |
+| ARCH-10 | Actor e autorização de jobs | Distinguir human/system/service actors e novas decisões de negócio de consequências já autorizadas; fechar autoridade/revalidação e envelope por classe de job. |
+| ARCH-11 | Atomicidade de AuditLog obrigatório | Tornar obrigatório que fato de sucesso e AuditLog requerido confirmem/falhem juntos; selecionar contrato transacional concreto na implementação. |
+
+## Remediação proposta — não aprovada como ADR
+
+A [remediação arquitetural](../../ARCHITECTURE-REMEDIATION.md) fortalece documentalmente o contrato: tenant obrigatório/fail-closed para toda persistência tenant-scoped; uma fronteira de Application para commands/jobs/assistência; distinção de actor e subject; atomicidade do fato e AuditLog obrigatório; semântica por operação para concorrência/replay; e modelo temporal explícito.
+
+Isso resolve os requisitos conceituais descritos por ARCH-07/08/09/10/11, mas **não aprova** escolhas de implementação, ferramentas ou regras de negócio. Os itens seguem propostas para revisão humana. Em particular, a forma do contrato de persistência, mecanismo de consistência, operação/outbox, clock/timezone, identidade de operação e authority para actors não humanos precisam de decisão e validação no projeto de aplicação.
 
 As decisões de produto e domínio que condicionam essas propostas continuam no [OPEN-DECISIONS.md](../../OPEN-DECISIONS.md); esta revisão não as resolve.
 

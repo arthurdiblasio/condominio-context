@@ -5,6 +5,8 @@ Esta pasta organiza a fundamentação documental do produto Condomínio.
 ## Índice
 
 - [Revisão crítica da arquitetura](../ARCHITECTURE-CRITICAL-REVIEW.md)
+- [Remediação arquitetural](../ARCHITECTURE-REMEDIATION.md)
+- [Fechamento e classificação das decisões de domínio](../DOMAIN-DECISIONS-CLOSURE.md)
 - [architecture/overview.md](./architecture/overview.md)
 - [architecture/layers.md](./architecture/layers.md)
 - [architecture/dependencies.md](./architecture/dependencies.md)
@@ -20,6 +22,7 @@ Esta pasta organiza a fundamentação documental do produto Condomínio.
 - [architecture/observability.md](./architecture/observability.md)
 - [architecture/project-structure.md](./architecture/project-structure.md)
 - [architecture/decisions.md](./architecture/decisions.md)
+- [architecture/temporal-model.md](./architecture/temporal-model.md)
 - [domain/overview.md](./domain/overview.md)
 - [domain/condominiums.md](./domain/condominiums.md)
 - [domain/people.md](./domain/people.md)

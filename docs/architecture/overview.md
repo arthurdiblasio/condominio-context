@@ -4,7 +4,7 @@
 
 Esta documentação propõe a arquitetura do futuro `condominio-api`, derivada do domínio, das regras, permissões, workflows, state machines e do [API Contract](../../API-CONTRACT.md). Não descreve uma aplicação existente e não autoriza implementação.
 
-**Status:** `ARCHITECTURE_REQUIRES_REVISION`
+**Status:** `ARCHITECTURE_REMEDIATION_REQUIRES_REVIEW`
 
 O objetivo é manter regras e identidade de domínio independentes de Gin, GORM, PostgreSQL, HTTP e provedores externos. A stack informada para a implementação futura é Go, Gin, GORM e PostgreSQL; a forma de uso e os detalhes arquiteturais ainda precisam de validação humana.
 
@@ -15,9 +15,11 @@ Fontes de verdade: [DOMAIN.md](../../DOMAIN.md), [BUSINESS-RULES.md](../../BUSIN
 - Começar como **monólito modular**, com módulos de domínio e casos de uso separados por responsabilidade.
 - Aplicar dependência em direção a Application e Domain; Infrastructure implementa portas requeridas pelos casos de uso.
 - Tratar o tenant e a decisão de autorização como contexto obrigatório e verificável para cada operação tenant-scoped.
+- Fazer do TenantContext validado requisito do contrato de persistência tenant-scoped; ausência/mismatch falha fechada.
+- Conduzir toda operação com efeito por Application authorization boundary, seja humana, administrativa, assistida ou automática.
 - Usar comandos semânticos por workflow e consultas de leitura sem efeitos de negócio; não assumir CQRS completo.
 - Delimitar transações pela consistência necessária a cada caso de uso, não por endpoint ou por conjunto de tabelas.
-- Gerar auditoria obrigatória a partir do caso de uso e do resultado, não somente do adaptador HTTP.
+- Confirmar fato/estado sensível e AuditLog obrigatório na mesma unidade de consistência.
 - Manter integrações, relógio, IDs, armazenamento, persistência e mensageria atrás de fronteiras substituíveis.
 - Adiar microsserviços, broker, cache distribuído e mecanismo de busca especializado até existir necessidade demonstrada.
 
@@ -37,11 +39,13 @@ O uso da stack não define transportes futuros para eventos, storage, autentica�
 ## Fronteiras de confiança
 
 1. A interface recebe dados externos não confiáveis.
-2. A identidade autenticada é validada por mecanismo ainda não escolhido; o tenant solicitado é apenas um candidato até ser validado.
-3. Application resolve o contexto, autorização e alvo de cada operação.
-4. Domain aplica invariantes e transições de negócio, sem confiar em autorização implícita.
-5. Infrastructure persiste fatos e atende portas; não decide política de domínio.
-6. Integrações externas só recebem dados autorizados e mínimos para sua finalidade.
+2. Authentication identifica UserAccount; associação a Person é uma relação de domínio separada e pode depender de OD-03.
+3. Tenant solicitado é candidate; Application valida contra identity/grant e só então cria contexto validado.
+4. Authorization e access-to-resource são gates obrigatórios antes do efeito.
+5. Domain aplica invariantes e transições de negócio, sem confiar em autorização implícita.
+6. Infrastructure exige tenant em cada operação scoped, persiste fato e audit obrigatório atomicamente e não decide policy.
+7. Jobs/handlers usam actor/processo explícito, purpose e tenant; nunca recebem bypass por serem automáticos.
+8. Integrações externas só recebem dados autorizados e mínimos para sua finalidade.
 
 ## Documentos
 
@@ -57,8 +61,10 @@ O uso da stack não define transportes futuros para eventos, storage, autentica�
 - [Outbox conceitual](./outbox.md)
 - [Infraestrutura e serviços externos](./infrastructure.md)
 - [Observabilidade e cache](./observability.md)
+- [Modelo temporal](./temporal-model.md)
 - [Estrutura conceitual do projeto](./project-structure.md)
 - [Revisão crítica da arquitetura](../../ARCHITECTURE-CRITICAL-REVIEW.md)
+- [Remediação arquitetural](../../ARCHITECTURE-REMEDIATION.md)
 
 ## Estado das decisões
 

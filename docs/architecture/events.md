@@ -12,6 +12,12 @@
 
 Domain events nascem quando a operação de domínio é aceita e representam algo que ocorreu. Application reúne os fatos resultantes, coordena persistência e efeitos. Um nome de evento no catálogo não determina esquema, broker, event sourcing ou emissão garantida.
 
+### Consistência com AuditLog
+
+Quando AuditLog for obrigatório, fato/estado de sucesso e AuditLog de sucesso pertencem à mesma unidade atômica de consistência. Se audit falhar, o fato/estado não pode ser confirmado; se o fato falhar, audit não pode afirmar sucesso. Tentativa negada pode produzir AuditLog de resultado negado se policy exigir, sem Domain Event de sucesso.
+
+Domain Events não substituem AuditLog. Persistência de evento não é obrigatória universalmente; quando publicação durável for requisito, intenção de publicação/outbox é registrada na mesma unidade atômica do fato. A seleção de eventos publicados e mecanismo permanecem requisitos por workflow/decisões técnicas.
+
 ## Reações a eventos
 
 Handlers pertencem conceitualmente à Application/integrações, fora do aggregate que originou o fato:
@@ -22,7 +28,11 @@ Handlers pertencem conceitualmente à Application/integrações, fora do aggrega
 - `AccessEventRecorded` pode acionar auditoria/rotina operacional aprovada.
 - `VoteRecorded` e `AssemblyClosed` não produzem apuração/publicação automaticamente enquanto OD-01 estiver aberta.
 
-Handlers devem ser idempotentes para efeitos repetíveis, manter tenant/origem/finalidade e não executar transições que não estejam aprovadas.
+Handlers devem ser idempotentes para efeitos repetíveis, manter tenant/origem/finalidade/actor e não executar transições não aprovadas. Todo handler entra pela fronteira Application, revalida contexto e, se fizer uma nova decisão de negócio, reavalia authority corrente. Consequência já autorizada só pode executar a intenção delimitada ainda válida/cancelável.
+
+## Envelope conceitual
+
+Evento/trabalho tenant-scoped carrega, conforme necessário: classificação Platform/Tenant; tenant validado do fato de origem; referência ao recurso/fato; tipo de evento; actor/origin; purpose; instante com tipo temporal correto; operation identity para replay; correlation. Esses campos contextualizam e correlacionam, mas não são credenciais. Consumer valida origem, tenant, recurso, validade/estado e authority antes do efeito; envelope ausente ou incoerente falha fechado. Não propagar PII além do mínimo.
 
 ## Síncrono vs candidato assíncrono
 
@@ -40,7 +50,7 @@ Não é necessário que todo evento use fila ou processamento assíncrono.
 
 ## Auditoria como responsabilidade transversal
 
-Use cases devem gerar os dados de auditoria exigidos por AUDIT-01..10. O registro obrigatório é coordenado em Application e deve pertencer à mesma decisão/commit quando a regra exige que a ação e audit sejam inseparáveis. Múltiplas entradas (HTTP, job, operação assistida) passam pelo mesmo caso de uso ou produzem auditoria equivalente, sem controller como única origem.
+Use cases devem gerar os dados de auditoria exigidos por AUDIT-01..10. O registro obrigatório e o fato de negócio confirmado pertencem à mesma decisão/commit; esta é uma garantia arquitetural para qualquer ação cujo audit seja mandatado. Múltiplas entradas (HTTP, job, operação assistida) passam pelo mesmo caso de uso ou produzem auditoria equivalente, sem controller como única origem.
 
 Logs técnicos, tracing e eventos de negócio não substituem AuditLog. Operação negada pode exigir audit conforme policy, mas nunca gera evento de sucesso. Leitura de auditoria é autorizada e também pode ser auditada.
 

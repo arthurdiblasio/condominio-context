@@ -12,13 +12,36 @@ Passar uma dimensão não satisfaz as outras. Autenticação técnica não prova
 
 ## Ponto de enforcement
 
-Application é a fronteira de autoridade dos casos de uso e deve exigir authorization decision antes de executar a transição. Interface pode autenticar e bloquear cedo por razões operacionais, mas não é a única fonte de enforcement: todos os caminhos que iniciem o caso de uso, inclusive tarefas, devem aplicar as mesmas regras.
+Application é a fronteira de autoridade dos casos de uso e deve exigir authorization decision antes de executar qualquer efeito. Interface pode autenticar e bloquear cedo por razões operacionais, mas não é a única fonte de enforcement: requests, jobs, ações agendadas, event handlers/consumers, processos de serviço, operações administrativas e suporte assistido passam pela mesma fronteira. Não há caminho de escrita que acesse Domain/repository ignorando o use case.
 
-Para cada ação, conferir conceitualmente:
+Para cada ação tenant-scoped, conferir conceitualmente:
 
-`UserAccount + Person + RoleAssignment + Permission + Scope + Resource + TenantContext + condições`
+`Actor + Subject + RoleAssignment? + Permission? + Scope? + Resource + Validated TenantContext + Purpose + condições`
 
-A matriz existente é proposta; conflitos e capacidades ausentes permanecem em [OPEN-DECISIONS.md](../../OPEN-DECISIONS.md) e [API authorization](../api/authorization.md).
+Interrogações indicam que um actor de serviço/sistema pode ter authority limitada sem UserAccount/Person humana; a forma concreta de concessão continua decisão técnica/de governança, não implica acesso. Para ação humana, associação UserAccount-Person, RoleAssignment, Permission, Scope, conflito e authority seguem a matriz e as decisões abertas. Operação global exige classificação Platform-scoped e authority correspondente, nunca ausência de tenant por conveniência.
+
+A matriz existente é proposta; conflito, capabilities ausentes e authority de actors não humanos permanecem em [OPEN-DECISIONS.md](../../OPEN-DECISIONS.md), [PERMISSIONS.md](../../PERMISSIONS.md) e [API authorization](../api/authorization.md). Uma lacuna significa que a operação não pode ser exposta/executada, não que o sistema cria um grant padrão.
+
+## Modelo de actor para automação e assistência
+
+- **Human actor:** conservar identidade autenticada, associação a Person quando resolvida e grants correntes.
+- **System actor:** processo interno nomeado que executa apenas uma regra automática explicitamente definida; o rótulo `system` nunca contorna authorization.
+- **Service actor:** integração com identidade própria e capability delegada, delimitada por ação, tenant e purpose; não reutiliza credenciais ou Person de solicitante.
+- **Assisted action:** auditar o operador que iniciou, o sujeito/alvo afetado, a representação e o purpose separadamente. Não atribuir a ação à pessoa afetada como se ela a tivesse executado.
+- **Assembly Proxy:** vale somente para sua representação de assembleia e escopo validado; não autoriza suporte nem jobs.
+
+### Trabalho assíncrono
+
+O producer persiste contexto mínimo e confiável: tenant/classificação Platform, actor/origin, purpose, resource, tipo de operação e correlação. O consumer trata campos como dados sujeitos a validação, não como credencial. Na execução:
+
+1. verificar integridade/origem do envelope por mecanismo ainda não escolhido;
+2. revalidar tenant/resource/state/validity e permissões atuais para uma nova decisão;
+3. para consequência previamente autorizada, limitar a execução exatamente à intenção persistida e revalidar que ela continua válida/não cancelada;
+4. negar se a authority foi revogada quando a ação ainda é uma nova decisão; não usar permissão histórica/actor original para ampliar efeitos;
+5. registrar actor de serviço/sistema e resultado em audit conforme requisito; retries usam a mesma identidade de operação e são idempotentes;
+6. não executar quando purpose, tenant ou actor estejam ausentes/ambíguos.
+
+Cada job deve ser classificado como **consequência autorizada** ou **nova decisão de negócio**. A classificação depende do domínio/policy e não é definida universalmente aqui.
 
 ## Permission check vs resource access check
 
@@ -31,7 +54,7 @@ Exemplo: `reservation.approve` no papel de syndic não autoriza aprovar uma Rese
 
 ## Query e dados pessoais
 
-Consultas também exigem tenant, Permission, scope, finalidade e visibilidade por dado/campo. Não retornar coleções cross-tenant com filtro tardio. A ausência de acesso deve evitar revelar existência ou conteúdo de recurso alheio. Dados da portaria e de assembleia têm exposição minimizada segundo PRIVACY rules.
+Consultas também exigem tenant, Permission, scope, finalidade e visibilidade por dado/campo. Não retornar coleções cross-tenant com filtro tardio. Ausência de acesso deve evitar revelar existência ou conteúdo de recurso alheio. `TENANT_MISMATCH` pode ser usado internamente em diagnóstico auditado; a resposta externa deve ser indistinguível de não encontrado/não visível por padrão. Expor motivo diferente requer decisão de segurança/privacy; não define HTTP status. Dados da portaria e de assembleia têm exposição minimizada segundo PRIVACY rules.
 
 ## Serviço versus política
 

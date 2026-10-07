@@ -13,7 +13,7 @@ Responsabilidades:
 - serializar resultados e mapear categorias de erro conceituais;
 - propagar identificador de correlação, sem usá-lo como autoridade ou identidade.
 
-Não decide elegibilidade, disponibilidade, grants, estados válidos, isolamento tenant, auditoria obrigatória nem política de retry.
+Qualquer tenant fornecido pela interface é candidato, nunca tenant confiável. Não decide elegibilidade, disponibilidade, grants, estados válidos, isolamento final, auditoria obrigatória nem política de retry.
 
 ## Application
 
@@ -31,6 +31,10 @@ Responsabilidades:
 - traduzir falhas de portas em erros de aplicação sem mascarar erro ou produzir sucesso falso.
 
 Application não depende de Gin, GORM, SQL ou SDK de provedor. Um caso de uso pode depender de contratos abstratos que Infrastructure implementa.
+
+**Fronteira obrigatória:** toda operação que produz efeito atravessa um Application use case autorizado, qualquer que seja a origem: HTTP, comando interno, evento, tarefa agendada, suporte assistido ou administração. Não expor um segundo caminho de escrita para repository/domain service. Para consulta, mesma validação de sujeito/tenant/scope/purpose aplica-se quando os dados forem restritos.
+
+Application diferencia tenant candidato de contexto validado e só aceita o último em operações tenant-scoped. O contexto não é mutado/reatribuído durante o caso de uso.
 
 ## Domain
 
@@ -64,6 +68,8 @@ Infrastructure não redefine regras, autoriza operações por conta própria nem
 - Domain depende apenas de seus próprios conceitos e de bibliotecas neutras se aprovadas.
 - Infrastructure implementa abstrações consumidas por Application e pode referenciar Domain para mapear seus conceitos.
 - Nenhuma camada interna depende de Gin; Domain não depende de GORM/PostgreSQL.
+- Adapters/job handlers chamam use cases, nunca repositories ou transições de agregado diretamente.
+- Port tenant-scoped exige tenant validado ou garantia equivalente; nenhum ID/request field autoriza lookup global.
 
 ## Validação e erros entre camadas
 

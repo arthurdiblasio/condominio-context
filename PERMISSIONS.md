@@ -184,7 +184,7 @@ Acesso excepcional de emergência não é concedido por este modelo nem necessá
 
 ## Decisões em aberto
 
-Ver [OPEN-DECISIONS.md — PERMISSIONS / AUTHORIZATION](./OPEN-DECISIONS.md#permissions--authorization). Decisões técnicas de identidade e enforcement não fazem parte deste documento.
+Ver [OPEN-DECISIONS.md — PERMISSIONS / AUTHORIZATION](./OPEN-DECISIONS.md). Decisões técnicas de identidade e enforcement não fazem parte deste documento.
 
 Lacunas de permissão por operação, inclusive `user_account.*`, rejeição/cancelamento onde não há capability específica e apuração/publicação de resultado, estão identificadas no [contrato conceitual](./docs/api/authorization.md); não devem ser preenchidas reutilizando permissões sem decisão.
 

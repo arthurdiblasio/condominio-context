@@ -11,10 +11,24 @@ Stack informada: Go, Gin, GORM e PostgreSQL. Gin é adaptador de Interface/API; 
 Repositories expressam necessidades reais de agregado/caso de uso, com tenant e fronteira explícitos. Candidatos incluem `ReservationRepository`, `PackageRepository`, `AssemblyRepository`, conforme necessidade concreta.
 
 - Evitar `GenericRepository<T>` universal e CRUD público genérico.
-- Repository não deve aceitar tenant omitido em recursos tenant-scoped.
+- Para recurso tenant-scoped, tenant validado ou garantia equivalente é obrigatório no contrato de toda leitura/escrita; tenant não pode ser parâmetro opcional. A forma literal do contrato permanece livre.
+- Operação conceitualmente equivalente a `FindByID(resourceID)` é proibida se puder retornar recurso tenant-scoped sem limitar/verificar tenant. Operação tenant-scoped deve exigir TenantContext/tenant validado ou garantia equivalente.
+- Operações de Platform/global devem ser separadas e declaradas; não usar método unscoped tenant-scoped como shortcut de suporte.
+- Validar que resource e todas as referências/joined resources pertencem ao tenant indicado antes de retornar/prosseguir.
+- Aplicar isolamento antes de paginação, agregação, busca, exportação, relatório ou cache; não filtrar somente após carregar dados.
 - Queries complexas podem usar consultas de leitura/projeções específicas sem carregar agregado inteiro.
 - Repositories não são endpoints nem camada para esconder regra de autorização.
 - Definição do contrato pertence ao lado interno (Application port, ou Domain quando sua linguagem exigir); implementação concreta pertence a Infrastructure.
+
+### Classificação de acesso
+
+Cada operação de persistência deve identificar explicitamente:
+
+- `TENANT-SCOPED`: exige TenantContext validado na leitura/escrita; ausência/mismatch falha fechada.
+- `PLATFORM-SCOPED`: opera só em dados globais nomeados (por exemplo catálogo); não adquire acesso operacional a tenants.
+- `CROSS-TENANT`: operação excepcional, explícita, por tenant-alvo e propósito, com permission de plataforma e auditoria. Não é busca sem filtro nem agregação implícita.
+
+Nenhuma consulta/unscoped interface é criada para “conveniência”. A arquitetura não escolhe RLS, schema por tenant ou outra defesa física, mas exige testes de integração que demonstrem que omissão/mismatch não expõe dados.
 
 ## GORM vs Domain
 

@@ -6,6 +6,8 @@ Registrar somente decisões que requerem autoridade de produto, política local,
 
 O [API Contract conceitual](./API-CONTRACT.md) referencia as decisões abaixo e destaca lacunas de authority/capabilities por operação. Não adiciona endpoints, protocolos ou decisões técnicas a este registro.
 
+A classificação e a análise de bloqueios das ODs solicitadas estão em [DOMAIN-DECISIONS-CLOSURE.md](./DOMAIN-DECISIONS-CLOSURE.md). Esse relatório não fecha decisões sem autoridade humana, não altera a prioridade registrada e não substitui as definições abaixo.
+
 ## CRITICAL
 
 ### OD-01 — Regras de assembleia e validade de votação
