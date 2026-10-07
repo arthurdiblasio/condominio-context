@@ -1,0 +1,10 @@
+# Local editor / system files
+.DS_Store
+Thumbs.db
+
+# OS metadata
+Desktop.ini
+
+# Temporary / generated artifacts
+*.tmp
+*.log
