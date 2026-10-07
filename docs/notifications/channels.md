@@ -9,9 +9,11 @@
 
 ## Regras
 
-- a notificação precisa ter destinatário, tipo, conteúdo, canal e status;
-- o canal deve ser tratado como conceito separado da mensagem;
+- `Notification` contém destinatário, finalidade/tipo e conteúdo lógico; pode originar múltiplas `NotificationDelivery`s;
+- canal e resultado/status pertencem a cada `NotificationDelivery`, não à intenção lógica da mensagem;
 - o WhatsApp deve ser documentado como canal possível, não como implementação obrigatória.
+
+Ver [state machines de Notification e NotificationDelivery](../state-machines/communications-and-assemblies.md#notification) para separar intenção, tentativa, submissão, entrega e leitura.
 
 ## Decisão pendente
 

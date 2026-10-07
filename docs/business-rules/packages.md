@@ -17,9 +17,9 @@
 
 ## Ciclo e sequência permitida
 
-`RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP` e `CANCELLED` são eventos históricos, não uma state machine confirmada. Como invariante, o ciclo de custódia começa com recebimento físico; `NOTIFIED` pressupõe pacote registrado; `CONFIRMED` e `PICKED_UP` referem-se ao mesmo pacote. Se retirada pode ocorrer sem confirmação, se cancelamento é permitido após retirada, se destinatário é obrigatório antes do recebimento e como resolver destino desconhecido exigem política humana.
+`RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP` e `CANCELLED` são eventos históricos, não estados de Package. Como invariante, o ciclo de custódia começa com recebimento físico; `NOTIFIED` pressupõe pacote registrado; `CONFIRMED` e `PICKED_UP` referem-se ao mesmo pacote. Ver [state machine e situação derivada do Package](../state-machines/access-and-packages.md#package-status-derivado).
 
-Status atual, caso exposto, deve ser derivado conforme uma regra aprovada e nunca substituir a sequência factual. Prazo de guarda e descarte não estão definidos.
+Caso se exponha uma situação atual, `IN_CUSTODY`, `RELEASED` e `CANCELLED` são projeções candidatas derivadas da sequência factual, não status finais aprovados. `PICKED_UP` continua sendo o evento de retirada, não o status. Se retirada pode ocorrer sem confirmação, se cancelamento é permitido após retirada, a precedência e como resolver destino desconhecido exigem política humana. Prazo de guarda e descarte não estão definidos.
 
 ## Confirmação: alternativas não escolhidas
 

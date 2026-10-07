@@ -20,9 +20,11 @@
 - `ACCESS-08` Referência opcional a `Visit`, `Event` ou `Reservation` não amplia o período autorizado além da janela válida aprovada.
 - `ACCESS-09` Funcionário de portaria só visualiza e registra dados necessários às suas permissões e tarefas no condomínio de contexto.
 
-## Ciclo conceitual de autorização
+## Ciclo conceitual de autorização e visita
 
-Vocabulário candidato: `DRAFT → ACTIVE → EXPIRED`, ou saída por `REVOKED`/`CANCELLED`. `ACTIVE` não significa que houve entrada. `EXPIRED` deriva do fim da validade; `REVOKED` registra revogação anterior; `CANCELLED` pode representar cancelamento antes do uso. Quem emite/revoga, janela inclusiva, uso único/repetido, aprovação, exceções e transições de draft dependem de decisão local/humana.
+Ver [state machines de acesso e visita](../state-machines/access-and-packages.md#accessauthorization) para estados, transições, guardas e correções. `AccessAuthorization` pode ser `DRAFT`, `ACTIVE`, `EXPIRED`, `REVOKED` ou `CANCELLED` quando o fluxo aplicável for aprovado. `ACTIVE` não significa que houve entrada; não há estado universal `USED`. `ENTRY`, `EXIT` e `DENIED` são eventos imutáveis com correção referenciada.
+
+`Visit` tem seu ciclo próprio; chegada/permanência não são derivados da autorização. `PLANNED`/`CANCELLED` formam o modelo-base; conclusão e `NO_SHOW` dependem de janela e procedimento aprovados. Emissor/revogação, janela inclusiva, uso único/repetido, aprovação, exceções e correção dependem de decisão local/humana.
 
 Hardware, QR Code, credenciais, leitura biométrica e integração física não são regras de domínio.
 

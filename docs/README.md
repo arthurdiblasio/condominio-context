@@ -4,6 +4,22 @@ Esta pasta organiza a fundamentação documental do produto Condomínio.
 
 ## Índice
 
+- [Revisão crítica da arquitetura](../ARCHITECTURE-CRITICAL-REVIEW.md)
+- [architecture/overview.md](./architecture/overview.md)
+- [architecture/layers.md](./architecture/layers.md)
+- [architecture/dependencies.md](./architecture/dependencies.md)
+- [architecture/modules.md](./architecture/modules.md)
+- [architecture/application.md](./architecture/application.md)
+- [architecture/domain.md](./architecture/domain.md)
+- [architecture/authorization.md](./architecture/authorization.md)
+- [architecture/tenant-context.md](./architecture/tenant-context.md)
+- [architecture/transactions.md](./architecture/transactions.md)
+- [architecture/events.md](./architecture/events.md)
+- [architecture/outbox.md](./architecture/outbox.md)
+- [architecture/infrastructure.md](./architecture/infrastructure.md)
+- [architecture/observability.md](./architecture/observability.md)
+- [architecture/project-structure.md](./architecture/project-structure.md)
+- [architecture/decisions.md](./architecture/decisions.md)
 - [domain/overview.md](./domain/overview.md)
 - [domain/condominiums.md](./domain/condominiums.md)
 - [domain/people.md](./domain/people.md)
@@ -40,12 +56,27 @@ Esta pasta organiza a fundamentação documental do produto Condomínio.
 - [workflows/assemblies.md](./workflows/assemblies.md)
 - [workflows/modules-finance.md](./workflows/modules-finance.md)
 - [workflows/audit-corrections.md](./workflows/audit-corrections.md)
+- [state-machines/README.md](./state-machines/README.md)
+- [state-machines/identity-and-reservations.md](./state-machines/identity-and-reservations.md)
+- [state-machines/access-and-packages.md](./state-machines/access-and-packages.md)
+- [state-machines/communications-and-assemblies.md](./state-machines/communications-and-assemblies.md)
+- [state-machines/modules.md](./state-machines/modules.md)
+- [api/overview.md](./api/overview.md)
+- [api/resources.md](./api/resources.md)
+- [api/commands.md](./api/commands.md)
+- [api/queries.md](./api/queries.md)
+- [api/authorization.md](./api/authorization.md)
+- [api/errors.md](./api/errors.md)
+- [api/idempotency.md](./api/idempotency.md)
+- [api/traceability.md](./api/traceability.md)
+- [api/versioning.md](./api/versioning.md)
 - [notifications/channels.md](./notifications/channels.md)
 - [decisions/decisions-log.md](./decisions/decisions-log.md)
 
 ## Escopo
 
 - arquitetura conceitual do produto;
+- arquitetura conceitual do backend, sem implementação executável;
 - regras de negócio e de governança;
 - permissões e papéis;
 - workflows e estados;

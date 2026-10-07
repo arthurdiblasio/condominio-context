@@ -33,7 +33,7 @@ Delegação de autoridade permite a um concedente autorizado transferir um subco
 
 ## Ciclo candidato
 
-`pending → active → suspended / revoked / expired`, com possível reativação aprovada. Estados não são definitivos até decisão sobre convite, aprovação, vigência, pausa e efetividade temporal.
+Ver [state machine de RoleAssignment](../state-machines/identity-and-reservations.md#roleassignment). `ACTIVE`, `SUSPENDED`, `REVOKED` e `EXPIRED` têm efeitos distintos; `PENDING` só se uma regra aprovada exigir grant futuro ou validação antes da efetividade. `SUSPENDED` pode voltar a `ACTIVE` com authority apropriada; `REVOKED` e `EXPIRED` são terminais no ciclo normal. Vigência, pausa e efetividade temporal ainda dependem de governança.
 
 ## Decisões críticas
 

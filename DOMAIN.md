@@ -539,20 +539,9 @@ Esses conceitos pertencem ao domínio funcional. Tecnologias específicas de aut
 
 ## 13. Estados e convenções
 
-Estados devem ser documentados com:
+O catálogo de referência de estados, transições, guardas, atores, permissions/scopes, efeitos, notificações, auditoria, terminais e correções está em [docs/state-machines/](./docs/state-machines/README.md). Estados condicionais continuam sujeitos a política local, governança ou validação jurídica.
 
-- significado;
-- transições permitidas;
-- quem pode disparar a transição;
-- efeito da transição.
-
-Exemplos de convenção:
-
-- Reservation: draft, pending, confirmed, cancelled, completed, expired
-- PackageEvent: RECEIVED, NOTIFIED, CONFIRMED, PICKED_UP, CANCELLED (fatos, não estados)
-- AccessAuthorization: draft, active, expired, revoked, cancelled (vocabulário candidato)
-
-Estados e transições acima não são todos regras aprovadas. `ENTRY`, `EXIT`, `DENIED` e eventos do pacote são fatos, não estados. Ver [BUSINESS-RULES.md](./BUSINESS-RULES.md) para regras e decisões pendentes.
+`ENTRY`, `EXIT`, `DENIED`, `RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP`, presença e voto são fatos/eventos, não estados automaticamente. Ver [BUSINESS-RULES.md](./BUSINESS-RULES.md) e [OPEN-DECISIONS.md](./OPEN-DECISIONS.md) para invariantes e decisões pendentes.
 
 ## 14. Dados pessoais, consentimento e retenção
 
@@ -605,6 +594,7 @@ Esses conceitos são relevantes para produto e comercialização, mas não devem
 - [BUSINESS-RULES.md](./BUSINESS-RULES.md)
 - [PERMISSIONS.md](./PERMISSIONS.md)
 - [WORKFLOWS.md](./WORKFLOWS.md)
+- [docs/state-machines/](./docs/state-machines/README.md)
 - [OPEN-DECISIONS.md](./OPEN-DECISIONS.md)
 - [docs/README.md](./docs/README.md)
 

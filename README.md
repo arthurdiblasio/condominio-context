@@ -12,7 +12,7 @@ Objetivo principal:
 
 ## Status
 
-`WORKFLOWS_REQUIRES_HUMAN_REVIEW`
+`ARCHITECTURE_REQUIRES_REVISION`
 
 ## Estrutura
 
@@ -24,8 +24,26 @@ condominio-context/
 ├── BUSINESS-RULES.md
 ├── PERMISSIONS.md
 ├── WORKFLOWS.md
+├── API-CONTRACT.md
+├── ARCHITECTURE-CRITICAL-REVIEW.md
 ├── OPEN-DECISIONS.md
 ├── docs/
+│   ├── architecture/
+│   │   ├── overview.md
+│   │   ├── layers.md
+│   │   ├── dependencies.md
+│   │   ├── modules.md
+│   │   ├── application.md
+│   │   ├── domain.md
+│   │   ├── authorization.md
+│   │   ├── tenant-context.md
+│   │   ├── transactions.md
+│   │   ├── events.md
+│   │   ├── outbox.md
+│   │   ├── infrastructure.md
+│   │   ├── observability.md
+│   │   ├── project-structure.md
+│   │   └── decisions.md
 │   ├── domain/
 │   │   ├── overview.md
 │   │   ├── condominiums.md
@@ -66,6 +84,22 @@ condominio-context/
 │   │   ├── assemblies.md
 │   │   ├── modules-finance.md
 │   │   └── audit-corrections.md
+│   ├── state-machines/
+│   │   ├── README.md
+│   │   ├── identity-and-reservations.md
+│   │   ├── access-and-packages.md
+│   │   ├── communications-and-assemblies.md
+│   │   └── modules.md
+│   ├── api/
+│   │   ├── overview.md
+│   │   ├── resources.md
+│   │   ├── commands.md
+│   │   ├── queries.md
+│   │   ├── authorization.md
+│   │   ├── errors.md
+│   │   ├── idempotency.md
+│   │   ├── traceability.md
+│   │   └── versioning.md
 │   ├── notifications/
 │   │   └── channels.md
 │   ├── decisions/
@@ -166,6 +200,10 @@ flowchart TD
 - [PERMISSIONS.md](./PERMISSIONS.md)
 - [docs/permissions/](./docs/permissions/)
 - [WORKFLOWS.md](./WORKFLOWS.md)
+- [State machines e ciclos de vida](./docs/state-machines/README.md)
+- [API Contract conceitual](./API-CONTRACT.md)
+- [Arquitetura conceitual do backend](./docs/architecture/overview.md)
+- [Revisão crítica da arquitetura](./ARCHITECTURE-CRITICAL-REVIEW.md)
 - [OPEN-DECISIONS.md](./OPEN-DECISIONS.md)
 - [Regras de negócio detalhadas](./docs/business-rules/)
 - [docs/README.md](./docs/README.md)

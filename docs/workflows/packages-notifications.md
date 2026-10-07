@@ -40,7 +40,7 @@ Destino desconhecido ou ambíguo: manter sem atribuição final/encaminhar confo
 
 ### Transições, eventos e notificações
 
-`RECEIVED` é fato, não state transition ou status consolidado. Notification é gatilhada por policy após registro; delivery status não muda PackageEvent.
+`RECEIVED` é fato, não state transition ou status consolidado. Se houver situação corrente de Package, ela é projeção separada a partir de eventos; ver [Package e PackageEvent lifecycle](../state-machines/access-and-packages.md#package-status-derivado). Notification é gatilhada por policy após registro; delivery status não muda PackageEvent.
 
 ### Auditoria
 
@@ -103,7 +103,7 @@ Package registrado; mecanismo de confirmação ou retirada definido/validado; at
 
 ### Transições/eventos/notificações
 
-CONFIRMED, PICKED_UP, CANCELLED são fatos PackageEvent distintos. Notificação à portaria/destinatário sobre confirmação/retirada é opcional e independente.
+`CONFIRMED`, `PICKED_UP`, `CANCELLED` são fatos PackageEvent distintos. A situação corrente não é o mesmo conceito que o evento. Notificação à portaria/destinatário sobre confirmação/retirada é opcional e independente.
 
 ### Auditoria
 
@@ -165,7 +165,7 @@ Destinatário inválido, opt-out aplicável, conteúdo indevido, canal desabilit
 
 ### Transições/eventos e notificações
 
-Notification é intenção; NotificationDelivery é tentativa. Gatilho deve sempre ser um evento/ação identificável. Delivery success/failure não é novo evento de acesso, confirmação ou aprovação.
+Notification é intenção; NotificationDelivery é tentativa. Gatilho deve sempre ser um evento/ação identificável. Lifecycles candidatos e resultados agregados estão em [state machines de comunicação](../state-machines/communications-and-assemblies.md#notification). `SUBMITTED` não significa `DELIVERED`; retry cria tentativa nova. Delivery success/failure não é novo evento de acesso, confirmação ou aprovação.
 
 ### Auditoria
 

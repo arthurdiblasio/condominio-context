@@ -21,6 +21,6 @@ Cada condomínio/área pode adotar uma política aprovada como `AUTO_APPROVED`, 
 
 ## Estados
 
-Vocabulário atual candidato: `draft`, `pending`, `confirmed`, `cancelled`, `completed`, `expired`. Não confirmar se período inválido, conflito proibido ou aprovação obrigatória ausente. Cancelada/completada/expirada não deve ser apresentada como reserva ativa; reabertura, cancelamento após confirmação, prazo de conclusão e efeitos de pagamento precisam de política. A distinção entre bloqueio de agenda provisório e confirmado também está aberta.
+Ver [state machine de Reservation e CommonArea](../state-machines/identity-and-reservations.md#reservation). Vocabulário em revisão: `DRAFT`, `PENDING`, `CONFIRMED`, `REJECTED`, `CANCELLED`, `COMPLETED`; `EXPIRED` somente para pedido pendente se houver prazo aprovado. `IN_PROGRESS` não é adotado como estado distinto no modelo-base. Não confirmar se período inválido, conflito proibido, área indisponível ou aprovação obrigatória ausente. Estados terminais não reabrem sem processo aprovado; bloqueio/desativação não cancela reserva silenciosamente.
 
 Ver [WORKFLOWS.md](../../WORKFLOWS.md) e [../../OPEN-DECISIONS.md](../../OPEN-DECISIONS.md).

@@ -217,7 +217,7 @@ O catálogo atual não define capabilities específicas `user_account.*`; `perso
 
 ### Fluxos alternativos e ciclo
 
-Estados candidatos: `invited → active → suspended/deactivated`; recuperação/reativação requer autoridade e regra aprovadas. Suspensão/desativação remove capacidade de novas ações autenticadas conforme efetividade definida, mas preserva Person, vínculos, RoleAssignments históricos e autoria.
+Lifecycle de referência: [UserAccount](../state-machines/identity-and-reservations.md#useraccount). Estados candidatos: `INVITED`, `ACTIVE`, `SUSPENDED`, `DISABLED`; expiração encerra convite se aprovada, não é estado universal de conta. Não há capabilities `user_account.*` no catálogo; ator e authority ficam em OD-03. Suspensão/desativação bloqueia novas ações autenticadas conforme efetividade definida, mas preserva Person, vínculos, RoleAssignments históricos e autoria.
 
 ### Validações
 

@@ -123,7 +123,7 @@ OD-14/OD-15/OD-16 e OD-07: política de conflito, scope platform, suporte excepc
 
 ## Idempotência e duplicidade no nível de negócio
 
-Nenhum mecanismo técnico é definido. Regras candidatas e decisões:
+Nenhum mecanismo técnico é definido. O [catálogo de state machines](../state-machines/README.md) propõe classificações de negócio (`IDEMPOTENT`, `NO-OP`, `REJECT`, `NEW_EVENT`) para as operações abaixo, sob OD-18. Não presumir que repetição é a mesma ocorrência sem evidência.
 
 | Operação repetida | Comportamento de negócio seguro | Decisão pendente |
 |---|---|---|
@@ -138,7 +138,7 @@ Nenhum mecanismo técnico é definido. Regras candidatas e decisões:
 
 ## Concorrência e conflitos
 
-- Reserva para a mesma área/período: validar disponibilidade no instante conceitual da confirmação; impedir duas confirmações incompatíveis quando policy proíbe conflito. Ordem/prioridade em empate permanece OPEN DECISION.
+- Ver [concorrência de negócio no catálogo](../state-machines/README.md). Reserva para a mesma área/período: validar disponibilidade no instante conceitual da confirmação; impedir duas confirmações incompatíveis quando policy proíbe conflito. Ordem/prioridade em empate permanece OPEN DECISION.
 - Grant/revoke concorrente: decisão precisa usar vigência/estado efetivo claramente definido; operação já autorizada versus revogada precisa de política de instante efetivo.
 - Package confirmation/release concorrentes: impedir que estado apresentado esconda fatos incompatíveis; preservar ambos os atores/instantes para revisão.
 - Votos concorrentes/duplicados: não aceitar contagem dupla; regra de substituição e janela exige validação legal.

@@ -101,47 +101,18 @@ Estas invariantes são aplicáveis sem decidir políticas locais:
 
 ## State machines e estados
 
-Os documentos de domínio contêm vocabulários propostos; somente invariantes factuais acima são definitivas. Transições que dependem de política estão explicitamente abertas.
+O catálogo completo de estados, estados iniciais/terminais, guardas, atores, permissions, scopes, efeitos, notificações, auditoria, repetições, concorrência e correção está em [docs/state-machines/](./docs/state-machines/README.md). Esse catálogo distingue estados do domínio de fatos e explicita quando um estado é apenas candidato/condicional a decisão humana.
 
-| Conceito | Ciclo/estados candidatos | Regra verificável e limite |
-|---|---|---|
-| UserAccount | invited, active, suspended, deactivated (proposta) | A conta só pode ser usada quando ativa. A associação Person-conta, quem ativa/suspende e efeitos sobre vínculos/papéis requerem decisão humana. |
-| RoleAssignment | pending, active, suspended, revoked, expired (proposta) | Deve indicar pessoa, papel, escopo e período/validade aplicável. Revogação/suspensão não apaga ações históricas; concessor deve ter autoridade. Estados e suspensão ainda requerem aprovação. |
-| Reservation | draft, pending, confirmed, cancelled, completed, expired (vocabulário existente) | Não confirmar se indisponível ou se aprovação requerida falta. Transições, cancelamento após confirmação, repetição e efeitos financeiros dependem de política. |
-| AccessAuthorization | draft, active, expired, revoked, cancelled (proposta revisada) | Autorização ativa só permite tentativa dentro do período, escopo e condições aprovados. `ENTRY`, `EXIT`, `DENIED` são `AccessEvent`, não estados de autorização. |
-| Package | estado atual derivado de eventos (estado fechado não definido) | `RECEIVED` deve identificar ocorrência de recebimento; mudanças não apagam `PackageEvent`. Sequência de NOTIFIED/CONFIRMED/PICKED_UP e qual evento define situação atual precisam de decisão. |
-| NotificationDelivery | created/attempted, submitted, delivered, read, failed (resultados possíveis) | Só registrar resultados sustentados pela evidência do canal; retry é nova tentativa e não apaga falha prévia. Vocabulário e política de retry/fallback são abertos. |
-| Assembly | planned, open, closed, cancelled (candidatos) | Votação não pode ser apresentada como aberta antes da condição de abertura definida; fechamento preserva registros. Convocação, quórum e efeitos do fechamento dependem de validação. |
-| Vote | pending, open, closed, cancelled (vocabulário existente) | Registrar voto apenas no período de votação definido e para elegibilidade aprovada na pauta. Correção, anulação, reabertura, sigilo e contagem precisam de decisão. |
+Princípios invariáveis:
 
-Uma transição não listada acima não é implicitamente permitida. A definição de transições completas, atores e efeitos é necessária antes de implementar cada workflow.
+- `ENTRY`, `EXIT`, `DENIED`, `RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP`, presença e voto são fatos/eventos, não estados por si sós.
+- Uma `AccessAuthorization` ativa não prova entrada; `NotificationDelivery(SUBMITTED)` não prova entrega.
+- Um estado incompatível, recurso expirado ou assignment suspenso/revogado/expirado não autoriza nova transição.
+- Toda operação respeita Permission, RoleAssignment, Scope, tenant e pré-condições do workflow; a existência de um estado não concede authority.
+- Correção preserva o fato original, a autoria e o contexto; terminais não são reabertos sem procedimento aprovado.
+- Semântica de repetição/concorrência continua sujeita a OD-18 e às decisões específicas do domínio.
 
-### Transições conceituais para revisão humana
-
-Os ciclos a seguir formalizam guardas e limites já identificáveis, mas estados indicados como candidatos e política local/jurídica ainda requerem aprovação. As ações listadas só podem ser executadas por papel/permissão no escopo correto.
-
-| Conceito | Transição permitida conceitualmente | Guarda / efeito | Transição proibida sem regra explícita |
-|---|---|---|---|
-| UserAccount | invited → active | associação válida com Person e requisitos de ativação aprovados; habilita acesso autenticado. | Conta sem Person associada tornar-se ativa. |
-| UserAccount | active → suspended / deactivated | autoridade definida pela política; impede novas ações autenticadas, preservando Person, vínculos e trilha. | Conta suspensa/desativada executar ação autenticada; apagar vínculos por desativação. |
-| UserAccount | suspended → active | somente após remoção válida da suspensão e autorização competente. | Reativar automaticamente ou restaurar papéis expirados/revogados. |
-| RoleAssignment | pending → active | concedente tem autoridade e o papel/escopo/validade são válidos; concede somente permissões aplicáveis. | Ativar escopo inválido ou autoridade superior à do concedente sem delegação. |
-| RoleAssignment | active → suspended / revoked / expired | suspensão/revogação por autoridade; expiração ao fim da vigência aprovada; preserva histórico. | Usar atribuição suspensa, revogada ou expirada; apagar trilha da mudança. |
-| Reservation | draft → pending | validação estrutural; fica aguardando regras/aprovação requeridas. | Tratar pending como confirmação ou bloqueio definitivo sem política. |
-| Reservation | draft/pending → confirmed | disponibilidade validada e aprovações/configurações obrigatórias satisfeitas; confirma período para o recurso. | Confirmar conflito proibido ou aprovação obrigatória ausente. |
-| Reservation | active state → cancelled / completed / expired | cancelamento autorizado; completion/expiration conforme período e política; preserva histórico. | Reabrir, concluir antes do período ou ressuscitar cancelled/expired sem regra explícita. |
-| AccessAuthorization | draft → active | pessoa/critério, escopo, período e requisitos aprovados; habilita tentativa, não registra entrada. | Ativar sem período ou escopo identificável. |
-| AccessAuthorization | active → expired / revoked / cancelled | validade termina ou autoridade cancela/revoga; bloqueia novas utilizações conforme alcance aprovado. | Tratar uma ENTRY como transição automática para estado `used` universal. |
-| Package | registrar RECEIVED | registro de recebimento físico com ator/instante quando conhecidos. | Registrar recebimento sem fato correspondente ou apagar ocorrência depois. |
-| Package | acrescentar NOTIFIED / CONFIRMED / PICKED_UP / CANCELLED | cada evento referencia o pacote e registra ator/instante conforme conhecido. NOTIFIED registra comunicação, não entrega. | Ordem entre confirmação, retirada e cancelamento, além dos fatos mínimos acima, não está aprovada; não impor sequência como regra universal. Corrigir contradições por trilha auditável. |
-| NotificationDelivery | created/attempted → submitted / delivered / read / failed | registrar apenas resultado evidenciado pelo canal. | Marcar entregue/lida sem evidência; apagar tentativa falha ao repetir. |
-| NotificationDelivery | failed → nova tentativa | retry cria outro registro vinculado à mesma Notification. | Sobrescrever falha anterior ou assumir fallback automático. |
-| Assembly | planned → open → closed | abertura/fechamento conforme convocação e procedimento aprovados; fechamento preserva pauta e registros. | Abrir sem condições definidas ou reabrir após closed sem política. |
-| Assembly | planned/open → cancelled | cancelamento por autoridade/procedimento definido; preserva fatos anteriores. | Cancelar e apagar presença/votos/fatos já registrados. |
-| Vote | pending → open → closed | período e procedimento da pauta aprovados; abrir requer pauta habilitada. Fechar impede novos votos naquele ciclo. | Registrar voto fora de open ou após closed. |
-| Vote | pending/open → cancelled | somente segundo autoridade e procedimento definidos; mantém auditoria. | Reabrir, corrigir ou anular voto sem procedimento validado e trilha. |
-
-`PackageEvent` e `AccessEvent` são fatos, não estados. A sequência indicada não fecha política jurídica ou operacional de votação, custódia, autorização ou entrega.
+Os documentos em `docs/state-machines/` substituem os vocabulários legados abaixo como catálogo de revisão; políticas dependentes de decisão permanecem abertas.
 
 ## OPEN DECISIONS classificadas
 
@@ -149,15 +120,16 @@ Os ciclos a seguir formalizam guardas e limites já identificáveis, mas estados
 |---|---|---|
 | CRITICAL | Regras legais de assembleia: elegibilidade por pauta, quórum, peso, procuração, convocação e validade de resultado. | Pode invalidar votação, apuração e registros do condomínio. |
 | CRITICAL | Regras de concessão/revogação de papéis, delegação de autoridade e matriz de permissões. | Determina acesso a dados e operações sensíveis entre escopos e tenants. |
-| HIGH | Política de associação Person-UserAccount, cardinalidade, convite, ativação, suspensão, desativação e efeitos sobre vínculos. | Afeta identidade, acesso, recuperação e continuidade de relações. |
-| HIGH | Política local de reservas: aprovação, disponibilidade, duração, conflito, cancelamento, bloqueio e eventual cobrança. | Determina consistência de agenda e expectativas de usuários. |
-| HIGH | Regras operacionais de visita e autorização: quem pode emitir/revogar, verificação, exceções e fatos de acesso. | Afeta controle de entrada, segurança e auditoria. |
-| HIGH | Confirmação/retirada de pacote, autoridade de representantes, contestação, correção e evidência. | Afeta custódia e responsabilização por encomendas. |
+| HIGH | OD-03: associação Person-UserAccount, cardinalidade, convite/expiração, ativação, suspensão/desativação, reativação e capabilities de ciclo de vida. | Afeta identidade, acesso, recuperação e continuidade de relações. |
+| HIGH | OD-04: política local de reservas, rejeição/expiração/conclusão, reabertura, bloqueio de área, concorrência, cancelamento e eventual cobrança. | Determina consistência de agenda e expectativas de usuários. |
+| HIGH | OD-05: ciclo de visitas/autorização, validade, uso, cancelamento/revogação, encerramento/no-show, exceções e correção de fatos de acesso. | Afeta controle de entrada, segurança e auditoria. |
+| HIGH | OD-06: confirmação/retirada de pacote, situação derivada, authority, contestação, correção, sequência e concorrência. | Afeta custódia e responsabilização por encomendas. |
 | HIGH | Finalidade, categorias de dados pessoais, visibilidade, retenção e anonimização validadas com responsáveis de privacidade/jurídicos. | Afeta conformidade e exposição de dados entre pessoas do condomínio. |
-| MEDIUM | Configuração de canais, opt-in/opt-out, retry, fallback, prioridade e semântica de entrega/leitura. | Afeta notificações e expectativas sem determinar canal técnico. |
+| MEDIUM | OD-08: configuração de canais, estados de tentativa, expiração/cancelamento, opt-in/opt-out, retry, fallback e semântica de entrega/leitura. | Afeta notificações e expectativas sem determinar canal técnico. |
 | MEDIUM | Política de veículos, estacionamento, duplicidade, placas temporárias e vínculo de visitante. | Afeta portaria e associação de veículos a unidades/pessoas. |
 | MEDIUM | Política de pets: responsável(is), encerramento, dados e regras locais de convivência. | Afeta cadastro e administração das informações de animais. |
-| MEDIUM | Quem pode habilitar/desabilitar módulos/features, dependências e procedimento de desativação. | Afeta disponibilidade funcional; dados históricos devem permanecer preservados. |
+| MEDIUM | OD-11/17: quem habilita/desabilita módulos/features, dependências, grants e efeito sobre operações em curso. | Afeta disponibilidade funcional; dados históricos devem permanecer preservados. |
+| MEDIUM | OD-09/18: efetividade temporal de vínculos, repetição, duplicidade de fatos e resolução de operações concorrentes. | Afeta histórico de relações, contagem de fatos e consistência entre workflows. |
 | LOW | Se bloco é obrigatório para todos os tipos de unidade e quais formas de estacionamento pertencem ao condomínio/unidade. | Afeta variações da estrutura física, sem alterar isolamento ou identidade. |
 
 ## Não implementar ainda

@@ -4,11 +4,13 @@
 
 Registrar somente decisões que requerem autoridade de produto, política local, governança ou validação jurídica. Não são especificações técnicas nem recomendações jurídicas.
 
+O [API Contract conceitual](./API-CONTRACT.md) referencia as decisões abaixo e destaca lacunas de authority/capabilities por operação. Não adiciona endpoints, protocolos ou decisões técnicas a este registro.
+
 ## CRITICAL
 
 ### OD-01 — Regras de assembleia e validade de votação
 
-Definir convocação, critérios de elegibilidade por pauta, peso, quórum, efeitos de inadimplência quando aplicável, procuração/representação, voto secreto ou aberto, correção, repetição/substituição de voto e validade do resultado; submeter as regras pertinentes à validação jurídica.
+Definir convocação, critérios de elegibilidade por pauta, peso, quórum, efeitos de inadimplência quando aplicável, procuração/representação, voto secreto ou aberto, abertura/fechamento de assembleia e pauta, correção, repetição/substituição de voto, reabertura e validade do resultado; submeter as regras pertinentes à validação jurídica. Distinguir inscrição, presença/ausência, representação, elegibilidade, registro do voto, apuração e publicação; definir autoridade e momento para cada transição.
 
 **Impacto:** determina quem pode deliberar e se uma deliberação pode ser considerada válida.
 
@@ -22,25 +24,25 @@ Definir quem pode conceder/suspender/revogar `RoleAssignment` em cada escopo, qu
 
 ### OD-03 — Person e UserAccount
 
-Decidir cardinalidade e associação entre `Person` e `UserAccount`, autoridade para criação/convite, ativação, associação, bloqueio, suspensão, desativação, recuperação e efeito sobre vínculos e atribuições. Definir quais capabilities permitem cada transição de conta; o catálogo atual ainda não contém `user_account.*`. Decidir autoridade para primeiro administrador no onboarding. Não definir método técnico de autenticação nesta decisão de domínio.
+Decidir cardinalidade e associação entre `Person` e `UserAccount`, autoridade para criação/convite, ativação, associação, bloqueio, suspensão, desativação, recuperação, reativação e efeito sobre vínculos e atribuições. Definir validade/expiração de convite, transições irreversíveis e quais capabilities permitem cada transição de conta; o catálogo atual ainda não contém `user_account.*`. Decidir autoridade para primeiro administrador no onboarding. Não definir método técnico de autenticação nesta decisão de domínio.
 
 **Impacto:** afeta identidade, acesso, histórico e continuidade das relações de domínio.
 
 ### OD-04 — Política de reservas e áreas comuns
 
-Definir por condomínio/área a política de aprovação (`AUTO_APPROVED`, `MANUAL_APPROVAL` ou `RULE_BASED`), disponibilidade, duração, antecedência, conflitos, concorrência/prioridade entre solicitações simultâneas, capacidade, bloqueios/manutenção, cancelamento e efeitos de cobrança/reembolso.
+Definir por condomínio/área a política de aprovação (`AUTO_APPROVED`, `MANUAL_APPROVAL` ou `RULE_BASED`), disponibilidade, duração, antecedência, conflitos, concorrência/prioridade entre solicitações simultâneas, capacidade, bloqueios/manutenção, cancelamento e efeitos de cobrança/reembolso. Especificar quando uma solicitação fica pendente, rejeitada ou expira; critério de conclusão, alterações após confirmação, destino de reservas afetadas por bloqueio/desativação e condições para reabrir um estado terminal.
 
 **Impacto:** determina alocação de recursos compartilhados e estados/transições de reservas.
 
 ### OD-05 — Visitas e controle de acesso
 
-Definir quem pode criar/revogar autorizações, quais visitas exigem autorização, regras de validade/uso repetido, identificação, exceções e procedimento de divergência entre entrada/saída observada e registros.
+Definir quem pode criar/revogar autorizações, quais visitas exigem autorização, regras de validade/uso repetido, identificação, exceções e procedimento de divergência entre entrada/saída observada e registros. Distinguir cancelamento de autorização de revogação, definir quando convite/visita pode ser marcado concluído ou no-show, janela de expiração e autoridade/procedimento para corrigir eventos de acesso ou reabrir visitas/autorização.
 
 **Impacto:** afeta controle de entrada, segurança operacional e trilha de auditoria.
 
 ### OD-06 — Pacotes: confirmação, retirada e contestação
 
-Definir quem pode confirmar ou retirar, quando representante pode agir, se confirmação é obrigatória antes da retirada, mecanismo de autorização, evidências aceitáveis, contestação, correção, tratamento de destino desconhecido e resposta a confirmação/retirada repetida ou concorrente.
+Definir quem pode confirmar ou retirar, quando representante pode agir, se confirmação é obrigatória antes da retirada, mecanismo de autorização, evidências aceitáveis, contestação, correção, tratamento de destino desconhecido e resposta a confirmação/retirada repetida ou concorrente. Definir a regra para derivar a situação corrente do pacote a partir de `PackageEvent`, a ordem permitida de confirmação/retirada/cancelamento e se cancelamento após retirada é possível.
 
 **Impacto:** define responsabilidade por custódia e resolução de disputas operacionais.
 
@@ -72,13 +74,13 @@ Definir permissions delegáveis, limites e vigência da delegação, transitivid
 
 ### OD-08 — Canais e política de notificação
 
-Definir canais habilitados, prioridades, opt-in/opt-out e exceções, fallback, retry, significado de entrega/leitura, conteúdo e retenção. Decidir provedor WhatsApp e templates quando o produto decidir implementar esse canal.
+Definir canais habilitados, prioridades, opt-in/opt-out e exceções, fallback, retry, significado de entrega/leitura, conteúdo e retenção. Definir quais resultados de `NotificationDelivery` são distinguíveis, expiração/cancelamento de uma tentativa e critério para considerar encerrada a intenção agregada `Notification`; retry deve continuar sendo nova tentativa, sem apagar anterior. Decidir provedor WhatsApp e templates quando o produto decidir implementar esse canal.
 
 **Impacto:** afeta expectativa de comunicação e tratamento de falhas; não altera o fato de negócio notificado.
 
 ### OD-09 — Vínculos residenciais e titularidade
 
-Definir prova e autoridade para criar/encerrar `UnitOwnership`, `UnitResidency` e `UnitTenancy`, copropriedade, múltiplos responsáveis, períodos futuros/sobrepostos, dependentes e direitos associados. Regras legais devem ser validadas.
+Definir prova e autoridade para criar/encerrar `UnitOwnership`, `UnitResidency` e `UnitTenancy`, copropriedade, múltiplos responsáveis, períodos futuros/sobrepostos, dependentes e direitos associados. Confirmar se vínculos com início futuro são aceitos e quando passam a efetivos; definir correção de datas e sobreposição. Regras legais devem ser validadas.
 
 **Impacto:** influencia visibilidade, responsabilidades e eventual elegibilidade; os vínculos devem permanecer conceitualmente separados.
 
@@ -90,7 +92,7 @@ Definir vínculo de veículos temporários/de visitantes, tratamento de duplicid
 
 ### OD-11 — Habilitação de módulos e features
 
-Definir quem habilita/desabilita `CondominiumModule` e `CondominiumFeature`, defaults, dependências, incompatibilidades, efeito sobre operações em andamento e acesso aos dados após desativação. Preservação automática do histórico é princípio; não apagar dados por desabilitar módulo.
+Definir quem habilita/desabilita `CondominiumModule` e `CondominiumFeature`, defaults, dependências, incompatibilidades, efeito sobre operações em andamento, critério para habilitação inicial/reativação e acesso aos dados após desativação. Preservação automática do histórico é princípio; não apagar dados por desabilitar módulo.
 
 **Impacto:** define disponibilidade funcional por tenant e transição segura entre configurações.
 
@@ -108,7 +110,7 @@ Definir quais permissions específicas são necessárias para utilizar cada feat
 
 ### OD-18 — Repetição de operações e concorrência operacional
 
-Definir, por operação, quando uma repetição deve ser reconhecida como repetição sem novo fato, rejeitada, corrigida ou aceita como evento distinto; especialmente recebimento/confirmação/retirada de pacote, presença/voto, acesso observado e grants concorrentes. Para reservas, a regra de prioridade/conflito pertence à OD-04; esta decisão cobre apenas repetição de comandos e duplicação de fatos.
+Definir, por operação, quando uma repetição deve ser reconhecida como repetição sem novo fato (`IDEMPOTENT`/`NO-OP`), rejeitada (`REJECT`), corrigida ou aceita como evento distinto (`NEW_EVENT`); especialmente recebimento/confirmação/retirada de pacote, presença/voto, acesso observado, cancelamento/revogação e grants concorrentes. Definir resultados de conflito operacional sem escolher mecanismos de sincronização. Para reservas, a regra de prioridade/conflito pertence à OD-04; esta decisão cobre repetição de comandos e duplicação de fatos.
 
 **Impacto:** evita duplicidade de custódia, dupla contagem de presença/voto, conflito de autoridade e confirmação concorrente de recurso. Não escolhe mecanismo técnico de idempotência ou sincronização.
 
@@ -154,4 +156,6 @@ As marcações de prioridade indicam impacto potencial e devem ser confirmadas p
 - [DOMAIN.md](./DOMAIN.md)
 - [PERMISSIONS.md](./PERMISSIONS.md)
 - [WORKFLOWS.md](./WORKFLOWS.md)
+- [API-CONTRACT.md](./API-CONTRACT.md)
+- [docs/api/authorization.md](./docs/api/authorization.md)
 - [docs/domain/domain-model.md](./docs/domain/domain-model.md)

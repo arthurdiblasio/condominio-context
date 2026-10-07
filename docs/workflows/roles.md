@@ -47,7 +47,7 @@ Permissions específicas do catálogo `role_assignment.read/grant/suspend/reacti
 
 ### Validações e transições
 
-Estados candidatos: `pending`, `active`, `suspended`, `revoked`, `expired`. `active` requer pessoa, papel, scope e vigência coerentes. Somente grants ativos e válidos participam de autorização. Nenhum estado ou grant atravessa tenant automaticamente.
+Lifecycle de referência: [RoleAssignment](../state-machines/identity-and-reservations.md#roleassignment). `ACTIVE`, `SUSPENDED`, `REVOKED`, `EXPIRED`; `PENDING` somente quando política criar grant futuro/aguardando validação. `REVOKED` e `EXPIRED` encerram o ciclo; somente suspensão pode ser reativada pelo fluxo autorizado. `ACTIVE` requer pessoa, papel, scope e vigência coerentes. Nenhum estado ou grant atravessa tenant automaticamente.
 
 ### Eventos/fatos e notificações
 

@@ -19,6 +19,8 @@
 
 ## Prioridade, fallback e ciclos
 
-Não há prioridade universal, fallback obrigatório, número ou intervalo de retry, canal obrigatório, nem estado global da Notification definido. Resultados candidatos de `NotificationDelivery`: `created/attempted`, `submitted`, `delivered`, `read`, `failed`. Eles se aplicam à tentativa e não devem ser promovidos a estado de todas as entregas. Sem evidência de leitura, não declarar lida.
+Ver [state machines de Notification e NotificationDelivery](../state-machines/communications-and-assemblies.md#notification). A Notification representa intenção; resultado agregado de entregas não é estado canônico no modelo-base. Cada tentativa inicia `PENDING`; `SUBMITTED` não equivale a `DELIVERED`, e leitura só pode ser declarada com evidência. Retry cria uma nova tentativa, sem status `RETRYING` nem sobrescrita da falha anterior.
+
+Não há prioridade universal, fallback obrigatório, número ou intervalo de retry, canal obrigatório nem validade de tentativa definidos. `CANCELLED` e `EXPIRED` dependem de política. Provedor, templates, custo, retenção, opt-in, opt-out, canal preferencial e fallback permanecem abertos.
 
 Provedor, templates, custo, retenção, opt-in, opt-out, canal preferencial e fallback permanecem abertos.

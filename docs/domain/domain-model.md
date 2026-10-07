@@ -182,27 +182,15 @@ Os agregados anteriores não são contratos de implementação. Não se afirma q
 
 ## 12. State machines conceituais
 
-Os nomes abaixo são vocabulário inicial, não aprovação de transições ou automações. Eventos factuais (como `ENTRY` ou `RECEIVED`) não são automaticamente estados.
+O catálogo de referência, ainda sujeito a revisão humana, está em [docs/state-machines/](../state-machines/README.md). Ele distingue estado de evento, descreve transições, atores, permissions/scopes, guardas, efeitos, notificações, auditoria, terminais e correções.
 
-### Reservation
+Princípios relevantes:
 
-Vocabulário anteriormente proposto: `draft`, `pending`, `confirmed`, `cancelled`, `completed`, `expired`. Significado operacional, transições, atores e efeitos dependem da política de reserva.
-
-### AccessAuthorization
-
-Vocabulário anteriormente proposto: `pending`, `active`, `used`, `expired`, `cancelled`. `used` não deve ser confundido com entrada física; a ocorrência efetiva é `AccessEvent`. Critérios de ativação, uso único e expiração não foram decididos.
-
-### Package
-
-Fatos históricos: `RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP`, `CANCELLED`. Essa lista não define uma sequência obrigatória nem estados mutuamente exclusivos. Confirmação e retirada são fatos diferentes; regra de precedência/estado atual está aberta.
-
-### NotificationDelivery
-
-Resultados possíveis a definir: tentativa criada, submetida, entregue, lida ou falha. A distinção disponível varia por canal; nenhum provedor ou garantia de entrega é pressuposto.
-
-### Assembly / AgendaItem / Vote
-
-`pending`, `open`, `closed`, `cancelled` foram sugeridos anteriormente para votação. Aplicação exata, transições, contagem e efeitos dependem de decisão humana e validação jurídica.
+- `ENTRY`, `EXIT`, `DENIED`, `RECEIVED`, `NOTIFIED`, `CONFIRMED`, `PICKED_UP`, presença e voto são fatos; não se tornam estado sem regra de domínio.
+- `AccessAuthorization` não tem estado `USED` automático; `Visit` não prova entrada; `Package` pode ter situação derivada, mas ela não substitui `PackageEvent`.
+- `Notification` é intenção; cada `NotificationDelivery` tem tentativa e resultado independente. `SUBMITTED` não significa `DELIVERED`.
+- Assembly, AgendaItem, Participant, VotingEligibility, Proxy e Vote têm condições distintas; voto registrado não é resultado apurado.
+- Estados candidatos e transições dependentes de autoridade, configuração ou legislação permanecem `OPEN DECISION`.
 
 ## 13. Decisões humanas críticas
 

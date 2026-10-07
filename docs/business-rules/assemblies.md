@@ -17,7 +17,7 @@
 
 ## Ciclo conceitual
 
-Assembly pode ter planejamento, abertura, encerramento ou cancelamento; AgendaItem pode ou não abrir votação. Vote usa vocabulário candidato existente `pending`, `open`, `closed`, `cancelled`. A abertura exige as condições previamente aprovadas; fechamento impede novos votos naquela etapa, sem apagar os existentes. Critérios de convocação, presença, proxy, elegibilidade, início/fim, quórum, voto secreto/aberto, opções, ponderação, correção e publicação de resultado são decisões humanas/legais.
+Ver [state machines de Assembly, AgendaItem, Participant, VotingEligibility, Proxy e Vote](../state-machines/communications-and-assemblies.md). Assembly e pauta têm ciclos separados; `VOTING` pertence a AgendaItem, não à Assembly. `Vote` é fato registrado, não ciclo `pending/open/closed`; presença, representação, elegibilidade, resultado e publicação também não são intercambiáveis. A abertura exige as condições previamente aprovadas; fechamento impede novos votos naquela etapa sem apagar os existentes. Critérios de convocação, presença, proxy, elegibilidade, início/fim, quórum, voto secreto/aberto, opções, ponderação, correção, reabertura e publicação são decisões humanas/legais.
 
 ## Decisões dependentes de legislação
 

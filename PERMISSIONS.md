@@ -39,6 +39,8 @@ O sujeito autenticado é `UserAccount` associado a `Person`. `Person` sem conta 
 
 Este é um modelo conceitual, não um algoritmo, ordem de execução técnica ou decisão final sobre conflitos.
 
+O [API Contract conceitual](./API-CONTRACT.md) aplica estes mesmos gates a commands e queries; seus permission mappings continuam sujeitos às decisões e não constituem grants efetivos.
+
 ## Menor privilégio e invariantes
 
 - Identidade no sistema não concede acesso por si só.
@@ -183,6 +185,8 @@ Acesso excepcional de emergência não é concedido por este modelo nem necessá
 ## Decisões em aberto
 
 Ver [OPEN-DECISIONS.md — PERMISSIONS / AUTHORIZATION](./OPEN-DECISIONS.md#permissions--authorization). Decisões técnicas de identidade e enforcement não fazem parte deste documento.
+
+Lacunas de permissão por operação, inclusive `user_account.*`, rejeição/cancelamento onde não há capability específica e apuração/publicação de resultado, estão identificadas no [contrato conceitual](./docs/api/authorization.md); não devem ser preenchidas reutilizando permissões sem decisão.
 
 ## Documentos
 

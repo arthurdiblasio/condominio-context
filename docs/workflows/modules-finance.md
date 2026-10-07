@@ -37,7 +37,7 @@ Solicitação de habilitar/desabilitar; feature identificada, dependências/inco
 
 ### Fluxos alternativos/validações/transições
 
-Dependência ausente, conflito ou operações em andamento podem bloquear ou exigir transição controlada conforme policy. Estados possíveis de habilitação (enabled/disabled/pending) são dependentes de governança, não ciclo final aprovado.
+Lifecycle de referência: [CondominiumModule e CondominiumFeature](../state-machines/modules.md). Estados de disponibilidade propostos: `ENABLED` e `DISABLED`; `AVAILABLE` descreve catálogo global, e `PENDING` não é adotado sem fluxo de aprovação aprovado. Dependência ausente, conflito ou operações em andamento podem bloquear ou exigir transição controlada conforme policy.
 
 ### Eventos/notificações/auditoria/pós-condições
 

@@ -50,7 +50,7 @@ Necessidade de convocar deliberação; critérios de convocação, agenda, perí
 
 ### Validações e transições
 
-Assembly candidate states `planned/open/closed/cancelled`; Vote candidate `pending/open/closed/cancelled`. Apenas abertura aprovada aceita voto; após fechar, novos votos não são aceitos sem processo de reabertura definido. Presença não implica elegibilidade; elegibilidade não implica voto; procuração não transfere elegibilidade automaticamente.
+Lifecycles de referência: [Assembly, AgendaItem, Participant, VotingEligibility, Proxy e Vote](../state-machines/communications-and-assemblies.md). Assembly e pauta têm ciclos distintos; `VOTING` pertence a AgendaItem. Vote é um fato `RECORDED` e só pode ser invalidado por correção autorizada, não uma máquina `pending/open/closed/cancelled`. Apenas abertura aprovada aceita voto; após fechar, novos votos não são aceitos sem processo de reabertura definido. Presença não implica elegibilidade; elegibilidade não implica voto; procuração não transfere elegibilidade automaticamente.
 
 ### Eventos/fatos e notificações
 

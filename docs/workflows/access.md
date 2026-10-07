@@ -46,7 +46,7 @@ Visita planejada ou chegada identificada. Exigir autorização somente segundo r
 
 ### Validações e transições
 
-`Visit` não é estado de autorização; autorização não é fato de acesso. O uso deve estar dentro do tempo/escopo autorizado. State machine de Visit não está definida; access fact é ENTRY/EXIT/DENIED.
+`Visit` não é estado de autorização; autorização não é fato de acesso. O uso deve estar dentro do tempo/escopo autorizado. Lifecycle proposto de Visit e de AccessAuthorization está em [state machines de visita e acesso](../state-machines/access-and-packages.md). Access fact é ENTRY/EXIT/DENIED; chegada/permanência não são inferidas da autorização.
 
 ### Eventos/fatos e notificações
 
@@ -110,7 +110,7 @@ Autorização pode existir sem Visit ou sem ENTRY. Período inválido, referênc
 
 ### Transições
 
-Vocabulário candidato `DRAFT → ACTIVE → EXPIRED`; termina por `REVOKED` ou `CANCELLED`. Entrada/saída não transforma automaticamente autorização em USED/consumida. Revogação/expiração não remove AccessEvents anteriores.
+Vocabulário de referência: `DRAFT → ACTIVE → EXPIRED`, com saídas `REVOKED`/`CANCELLED` conforme política. `DRAFT` só se houver validação; autorização sem revisão pode tornar-se `ACTIVE` após as guardas satisfeitas. Entrada/saída não transforma automaticamente autorização em `USED`/consumida. Revogação/expiração não remove AccessEvents anteriores.
 
 ### Eventos, notificações, auditoria e pós-condições
 

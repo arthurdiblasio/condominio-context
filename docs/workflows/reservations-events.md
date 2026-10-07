@@ -40,7 +40,7 @@ Area inexistente, tenant inconsistente, conflito com reservas confirmadas, capac
 
 ### Transições, eventos, notificações
 
-Estados de CommonArea não padronizados. Fatos: area created/configured/blocked/reopened/closed. Notificações para reservas afetadas somente segundo policy/canal.
+Estados de disponibilidade propostos (`ACTIVE`, `BLOCKED`, `MAINTENANCE`, `DISABLED`) e impacto sobre reservas estão descritos em [CommonArea lifecycle](../state-machines/identity-and-reservations.md#commonarea). Fatos: area created/configured/blocked/reopened/closed. Notificações para reservas afetadas somente segundo policy/canal; bloqueio não altera reservas por inferência.
 
 ### Auditoria e pós-condições
 
@@ -98,7 +98,7 @@ Solicitação de período; CommonArea disponível; Person/Unit válidas; configu
 
 ### Validações e transições
 
-Vocabulário candidato: `draft`, `pending`, `confirmed`, `cancelled`, `completed`, `expired`. Só confirmar após validações e approvals exigidas. Mudança de período reexecuta validações. Cancelamento/completion/expiration não pode apagar eventos ou notificação anterior.
+Lifecycle de referência: [Reservation](../state-machines/identity-and-reservations.md#reservation). Estados em revisão: `DRAFT`, `PENDING`, `CONFIRMED`, `REJECTED`, `CANCELLED`, `COMPLETED`; `EXPIRED` apenas para pedido pendente sob prazo aprovado. `IN_PROGRESS` não é estado base. Só confirmar após validações e approvals exigidas. Mudança de período reexecuta validações. Cancelamento/conclusão/expiração não apaga eventos ou notificação anterior.
 
 ### Eventos/fatos e notificações
 

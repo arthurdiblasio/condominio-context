@@ -6,7 +6,7 @@ Catálogo e índice dos workflows operacionais do produto. Os fluxos conectam co
 
 Todo ator listado é participante potencial, não grant automático. A ação exige sujeito autenticado quando aplicável, `RoleAssignment`, `Permission`, `Scope`, tenant e condições de negócio coerentes. Use os detalhes em [PERMISSIONS.md](./PERMISSIONS.md) e sua matriz como baseline **proposta**, não concessão aprovada.
 
-Estados e transições marcados como candidatos dependem das políticas aprovadas em [BUSINESS-RULES.md](./BUSINESS-RULES.md). Uma falha de notificação não reverte o fato de negócio que originou a comunicação. Correção deve preservar o histórico; não é permitido reescrever silenciosamente eventos.
+O catálogo autoritativo de revisão de estados, transições e fatos está em [docs/state-machines/](./docs/state-machines/README.md), em conjunto com as regras de [BUSINESS-RULES.md](./BUSINESS-RULES.md). Estados condicionais dependem de política aprovada. Uma falha de notificação não reverte o fato de negócio que originou a comunicação. Correção deve preservar o histórico; não é permitido reescrever silenciosamente eventos.
 
 ## Catálogo
 
@@ -76,6 +76,8 @@ Os fluxos abaixo dependem de decisões já registradas em [OPEN-DECISIONS.md](./
 ## Documentos relacionados
 
 - [BUSINESS-RULES.md](./BUSINESS-RULES.md)
+- [Catálogo de state machines](./docs/state-machines/README.md)
+- [API Contract conceitual e rastreabilidade](./API-CONTRACT.md)
 - [PERMISSIONS.md](./PERMISSIONS.md)
 - [DOMAIN.md](./DOMAIN.md)
 - [OPEN-DECISIONS.md](./OPEN-DECISIONS.md)
